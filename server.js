@@ -14,6 +14,9 @@ connection.connect(err => {
     runMenu()
 });
 
+//
+// prompt user for add, view, update by department, role or employee
+
 const mainMenu = ['Add', 'View', 'Update', 'Exit'];
 const subMenu = ['Department', 'Role', 'Employee', 'Exit'];
 let mainMenuChoice = "";
