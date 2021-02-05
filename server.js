@@ -20,6 +20,13 @@ connection.connect(err => {
 const mainMenu = ['Add', 'View', 'Update', 'Exit'];
 const subMenu = ['Department', 'Role', 'Employee', 'Exit'];
 let mainMenuChoice = "";
+let mainMenuId;
+let dept_list = [];
+let role_list = [];
+let sql_view_string = "";
+
+// 
+// main menu
 
 const runMenu = () => {
     inquirer.prompt([
@@ -31,12 +38,16 @@ const runMenu = () => {
         }
     ]).then(answer => {
         console.log(answer)
+       
         mainMenuChoice = answer.action + " by?";
         if (answer.action === mainMenu[0]) {
+            mainMenuId = 0;
             subMenu_prompt();
         } else if (answer.action === mainMenu[1]) {
+            mainMenuId = 1;
             subMenu_prompt();
         } else if (answer.action === mainMenu[2]) {
+            mainMenuId = 2;
             subMenu_prompt();
         } else {
             exit();
@@ -57,11 +68,46 @@ const runMenu = () => {
         ]).then(answer => {
             console.log(answer)
             if (answer.option === subMenu[0]) {
-                department_prompt();
+                //
+                // department option
+
+                //
+                // add 
+                if (mainMenuOperation == 0)
+                    department_prompt();
+                //
+                // view 
+                else (mainMenuOperation == 1)
+                    view_table("select * from department");
+
             } else if (answer.option === subMenu[1]) {
-                role_prompt();;
-                // } else if (answer.option === subMenu[2]) {
-                //     //rangeSearch();    
+                //
+                // role option
+
+                //
+                // add 
+                if (mainMenuOperation == 0)
+                    role_prompt();
+
+                //
+                // view                     
+                else if (mainMenuOperation == 1)
+                    view_table("select * from role");
+
+            } else if (answer.option === subMenu[2]) {
+                //
+                // employee opttion
+
+                //
+                //add
+                if (mainMenuOperation == 0)
+                    employee_prompt();
+
+                //
+                // view                     
+                else if (mainMenuOperation == 1)
+                    view_table("select * from employee");
+
             } else {
                 exit();
             }
@@ -85,15 +131,28 @@ const runMenu = () => {
         })
     }
 
+    const view_table = (sqlstr) => {
+
+        connection.query(sqlstr, (err, result) => {
+            if (err) throw (err)
+            console.table(result)
+            runMenu()
+        })
+    }
+
     const role_prompt = () => {
         //
         // need a list of departments
 
-        connection.query("select id, name from department order by name", (err, result) => {
+        connection.query("select id, name from department order by id", (err, result) => {
             if (err) throw (err)
-            console.table(result)
-        })
 
+            result.forEach(element => {
+                dept_list.push(`${element.id}-${element.name}`);
+            });
+            //console.table(dept_list)
+            dept_list = [];
+        })
 
         inquirer.prompt([
             {
@@ -110,19 +169,81 @@ const runMenu = () => {
                 name: "whichdepartment",
                 type: "list",
                 message: "Department:",
-                choices: result
+                choices: dept_list
             },
 
         ]).then(answer => {
             console.log(answer)
-            connection.query("insert into department (name) values (?)", answer.name, (err, result) => {
-                if (err) throw (err)
-                //console.table(result)
-                runMenu()
-            })
+
+            let dept_id = answer.whichdepartment.substring(0, answer.whichdepartment.indexOf("-"));
+            console.log("department id: ", dept_id);
+
+            connection.query("insert into role set ?",
+                {
+                    role: answer.role,
+                    salary: answer.slary,
+                    department_id: dept_id
+                }, (err, result) => {
+                    if (err) throw (err)
+                    //console.table(result)
+                    runMenu()
+                })
         })
     }
 
+    const employee_prompt = () => {
+        //
+        // get a list of roles
+
+        connection.query("select id, role from role order by id", (err, result) => {
+            if (err) throw (err)
+
+            console.log(result);
+            //role_list = [];
+            result.forEach(element => {
+                role_list.push(`${element.id}-${element.role}`);
+            });
+            console.table(role_list)
+
+        })
+
+        inquirer.prompt([
+            {
+                name: "firstname",
+                type: "input",
+                message: "First name:"
+            },
+            {
+                name: "lastname",
+                type: "input",
+                message: "Last name"
+            },
+            {
+                name: "whichrole",
+                type: "list",
+                message: "Employee role:",
+                choices: role_list
+            },
+
+        ]).then(answer => {
+            console.log(answer)
+
+            let role_id = answer.whichrole.substring(0, answer.whichrole.indexOf("-"));
+            console.log("role id: ", role_id);
+
+            connection.query("insert into employee set ?",
+                {
+                    first_name: answer.firstname,
+                    last_name: answer.lastname,
+                    role_id: role_id,
+                    manager_id: 0
+                }, (err, result) => {
+                    if (err) throw (err)
+                    //console.table(result)
+                    runMenu()
+                })
+        })
+    }
 
     const exit = () => {
         console.log('exit')

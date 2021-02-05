@@ -1,3 +1,5 @@
+set sql_safe_updates = 0;
+
 create database employeetracker_db;
 
 use employeetracker_db;
@@ -30,6 +32,7 @@ create table employee (
         REFERENCES employee(id)
         );
 
+select * from department;
     
     
     
