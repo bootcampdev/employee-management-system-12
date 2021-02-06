@@ -34,7 +34,7 @@ const runMenu = () => {
         {
             name: 'action',
             type: 'list',
-            message: 'Please select one of the following |-- HR --| functions:',
+            message: 'Please select one of the following |-- HR Management --| operations:',
             choices: mainMenu
         }
     ]).then(answer => {
@@ -67,7 +67,7 @@ const runMenu = () => {
                 choices: subMenu
             }
         ]).then(answer => {
-            console.log(answer)
+            //console.log(answer)
             if (answer.option === subMenu[0]) {
                 //
                 // department option
@@ -78,7 +78,8 @@ const runMenu = () => {
                     department_prompt();
                 //
                 // view 
-                else (mainMenuId == 1)
+                else if (mainMenuId == 1)
+                    
                 view_table("select id as Id, name as Department from department");
 
             } else if (answer.option === subMenu[1]) {
@@ -110,9 +111,10 @@ const runMenu = () => {
                     view_table("select e.id as EmployeeId, concat(e.last_name, ', ',e.first_name) as EmployeeName " +
                         ", r.role as Role " +
                         ", d.name as Department " +
-                        ", manager_id " +
+                        ", e2.last_name as Manager " +
                         " from employee e inner join role r on e.role_id = r.id " +
-                        "inner join department d on r.department_id = d.id;");
+                        "inner join department d on r.department_id = d.id " +
+                        "left outer join employee e2 on e.manager_id = e2.id;");
 
             } else {
                 exit();
@@ -143,7 +145,7 @@ const runMenu = () => {
                 message: "Department name?"
             }
         ]).then(answer => {
-            console.log(answer)
+            //console.log(answer)
             connection.query("insert into department (name) values (?)", answer.name, (err, result) => {
                 if (err) throw (err)
                 //console.table(result)
@@ -188,10 +190,8 @@ const runMenu = () => {
             },
 
         ]).then(answer => {
-            console.log(answer)
 
             let dept_id = answer.whichdepartment.substring(0, answer.whichdepartment.indexOf("-"));
-            console.log("department id: ", dept_id);
 
             connection.query("insert into role set ?",
                 {
@@ -213,32 +213,12 @@ const runMenu = () => {
         //
         // get a list of roles
 
-        get_role_list();
-
-        // connection.query("select id, role from role order by id", (err, result) => {
-        //     if (err) throw (err)
-
-        //     //console.log(result);
-        //     //role_list = [];
-        //     result.forEach(element => {
-        //         role_list.push(`${element.id}-${element.role}`);
-        //     });
-        // })
+        get_role_list();      
 
         //
         // get a list of possible managers
 
-        get_manager_list();
-
-        // connection.query("select id, concat(last_name, ', ',first_name) as Manager from employee", (err, result) => {
-        //     if (err) throw (err)
-
-        //     console.log(result);
-        //     role_list = [];
-        //     result.forEach(element => {
-        //         manager_list.push(`${element.id}-${element.Manager}`);
-        //     });
-        // })
+        get_manager_list();      
 
         inquirer.prompt([
             {
@@ -265,12 +245,10 @@ const runMenu = () => {
             }
 
         ]).then(answer => {
-            console.log(answer)
 
             let role_id = answer.whichrole.substring(0, answer.whichrole.indexOf("-"));
-            console.log("role id: ", role_id);
+
             let manager_id = answer.whichmanager.substring(0, answer.whichmanager.indexOf("-"));
-            console.log("manager id: ", manager_id);
 
             connection.query("insert into employee set ?",
                 {
@@ -289,11 +267,11 @@ const runMenu = () => {
     }
 
     const get_manager_list = () => {
+        manager_list = [];
         connection.query("select id, concat(last_name, ', ',first_name) as Manager from employee", (err, result) => {
             if (err) throw (err)
 
             //console.log(result);
-            //role_list = [];
             result.forEach(element => {
                 manager_list.push(`${element.id}-${element.Manager}`);
             });
@@ -301,11 +279,11 @@ const runMenu = () => {
     }
 
     const get_role_list = () => {
+        role_list = [];
         connection.query("select id, role from role order by id", (err, result) => {
             if (err) throw (err)
 
             //console.log(result);
-            //role_list = [];
             result.forEach(element => {
                 role_list.push(`${element.id}-${element.role}`);
             });
@@ -313,7 +291,7 @@ const runMenu = () => {
     }
 
     const exit = () => {
-        console.log('exit')        
+        console.log('Thank you for use |-- HR Management --|')        
         process.exit()
     }
 }
