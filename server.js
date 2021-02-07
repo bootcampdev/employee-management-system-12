@@ -34,7 +34,7 @@ const runMenu = () => {
         {
             name: 'action',
             type: 'list',
-            message: '\nWelcome to |-- HR Employee Management --|  Please select one of the following operations:\n',
+            message: 'Welcome to |-- HR Employee Management --|  Please select one of the following operations:\n',
             choices: mainMenu
         }
     ]).then(answer => {       
@@ -99,7 +99,7 @@ const runMenu = () => {
                 // view 
                 else if (mainMenuId == 1)
 
-                    view_table("select id as Id, name as Department from department");
+                    view_table("select id as Id, name as Department from department where id > 1");
             }
             else if (answer.option === subMenu[1]) {
                 //
@@ -373,7 +373,7 @@ const runMenu = () => {
         let deferred = q.defer();
 
         role_list = [];
-        connection.query("select id, role from role order by id", (err, result) => {
+        connection.query("select id, role from role where id > 1 order by id", (err, result) => {
             if (err) throw (err)
           
             result.forEach(element => {

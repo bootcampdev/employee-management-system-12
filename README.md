@@ -1,137 +1,102 @@
-# Unit 12 MySQL Homework: Employee Tracker
+# Unit 12 MySQL Homework: Employee Management System
 
-Developers are often tasked with creating interfaces that make it easy for non-developers to view and interact with information stored in databases. Often these interfaces are known as **C**ontent **M**anagement **S**ystems. In this homework assignment, your challenge is to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
+<p>
+<img alt="JavaScript" src="https://img.shields.io/badge/javascript%20-%23323330.svg?&style=for-the-badge&logo=javascript&logoColor=%23F7DF1E"/>
+<img alt="jQuery" src="https://img.shields.io/badge/jquery%20-%230769AD.svg?&style=for-the-badge&logo=jquery&logoColor=white"/>
+ <img alt="Nodejs" src="https://img.shields.io/badge/-Nodejs-43853d?style=flat-square&logo=Node.js&logoColor=white" />
+ <img alt="Express.js" src="https://img.shields.io/badge/express.js%20-%23404d59.svg?&style=for-the-badge"/>
+ <img alt="React" src="https://img.shields.io/badge/react%20-%2320232a.svg?&style=for-the-badge&logo=react&logoColor=%2361DAFB"/>
+ <img alt="Bootstrap" src="https://img.shields.io/badge/bootstrap%20-%23563D7C.svg?&style=for-the-badge&logo=bootstrap&logoColor=white"/>
+ <img alt="GitHub" src="https://img.shields.io/badge/github%20-%23121011.svg?&style=for-the-badge&logo=github&logoColor=white"/>
+ </p>
+
+ 
+
+![MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+![Mozilla](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)
+
+
+This command line program demonstrates the use of MySQL with node.js and the database functions CRUD, Create, Read, Update and Delete.
+This HR command line application builds a solution for managing a company's employees by allowing the user to create department, roles and employees.  Other CRUD operations are allowed to support framework of the employee identities. 
+
+```
+I want to be able to view and manage the departments, roles, and employees in my company.
+
+```
+
+ ## The Details
+
+This command-line application can do the following:
+
+  * Add departments, roles, employees
+
+  * View departments, roles, employees
+
+  * Update employee roles
+
+Additional options are (Bonus):
+
+  * Update employee roles
+
+  * Delete departments, roles, and employees
+
+  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
+  
+  * This includes variety of SQL JOINS, GROUP and SUM clauses to complete this assignment.
+
+  ## Demo
+
+  [Application Demo](Assets/Emp-Management-Demo.mp4)
 
 ## Instructions
 
-Design the following database schema containing three tables:
+Design the following database schema and seed data can be found below:
 
-![Database Schema](Assets/schema.png)
+[Database Schema](Assets/schema-12.sql)
 
-* **department**:
+[Working Database Log and seed data](Assets/dbseed-12.sql)
 
-  * **id** - INT PRIMARY KEY
-  * **name** - VARCHAR(30) to hold department name
+## Require Install
+```md
+$ node install inquirer
 
-* **role**:
+$ node install express
 
-  * **id** - INT PRIMARY KEY
-  * **title** -  VARCHAR(30) to hold role title
-  * **salary** -  DECIMAL to hold role salary
-  * **department_id** -  INT to hold reference to department role belongs to
+$ node install mysql
 
-* **employee**:
-
-  * **id** - INT PRIMARY KEY
-  * **first_name** - VARCHAR(30) to hold employee first name
-  * **last_name** - VARCHAR(30) to hold employee last name
-  * **role_id** - INT to hold reference to role employee has
-  * **manager_id** - INT to hold reference to another employee that manages the employee being Created. This field may be null if the employee has no manager
-  
-Build a command-line application that at a minimum allows the user to:
-
-  * Add departments, roles, employees
-
-  * View departments, roles, employees
-
-  * Update employee roles
-
-Bonus points if you're able to:
-
-  * Update employee managers
-
-  * View employees by manager
-
-  * Delete departments, roles, and employees
-
-  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-
-We can frame this challenge as follows:
-
-```
-As a business owner
-I want to be able to view and manage the departments, roles, and employees in my company
-So that I can organize and plan my business
+$node install q
 ```
 
-How do you deliver this? Here are some guidelines:
+## Usage
+```md
+$ node install
+$ node server
 
-* Use the [MySQL](https://www.npmjs.com/package/mysql) NPM package to connect to your MySQL database and perform queries.
-
-* Use [InquirerJs](https://www.npmjs.com/package/inquirer/v/0.2.3) NPM package to interact with the user via the command-line.
-
-* Use [console.table](https://www.npmjs.com/package/console.table) to print MySQL rows to the console. There is a built-in version of `console.table`, but the NPM package formats the data a little better for our purposes.
-
-* You may wish to have a separate file containing functions for performing specific SQL queries you'll need to use. Could a constructor function or a class be helpful for organizing these?
-
-* You will need to perform a variety of SQL JOINS to complete this assignment, and it's recommended you review the week's activities if you need a refresher on this.
-
-![Employee Tracker](Assets/employee-tracker.gif)
-
-### Hints
-
-* You may wish to include a `seed.sql` file to pre-populate your database. This will make development of individual features much easier.
-
-* Focus on getting the basic functionality completed before working on more advanced features.
-
-* Review the week's activities for a refresher on MySQL.
-
-* Check out [SQL Bolt](https://sqlbolt.com/) for some extra MySQL help.
-
-## Minimum Requirements
-
-* Functional application.
-
-* GitHub repository with a unique name and a README describing the project.
-
-* The command-line application should allow users to:
-
-  * Add departments, roles, employees
-
-  * View departments, roles, employees
-
-  * Update employee roles
-
-## Bonus
-
-* The command-line application should allow users to:
-
-  * Update employee managers
-
-  * View employees by manager
-
-  * Delete departments, roles, and employees
-
-  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-
-## Commit Early and Often
-
-One of the most important skills to master as a web developer is version control. Building the habit of committing via Git is important for two reasons:
-
-* Your commit history is a signal to employers that you are actively working on projects and learning new skills.
-
-* Your commit history allows you to revert your codebase in the event that you need to return to a previous state.
-
-Follow these guidelines for committing:
-
-* Make single-purpose commits for related changes to ensure a clean, manageable history. If you are fixing two issues, make two commits.
-
-* Write descriptive, meaningful commit messages so that you and anyone else looking at your repository can easily understand its history.
-
-* Don't commit half-done work, for the sake of your collaborators (and your future self!).
-
-* Test your application before you commit to ensure functionality at every step in the development process.
-
-We would like you to have well over 200 commits by graduation, so commit early and often!
+```
 
 
-## Submission on BCS
+## Application Repository
 
-You are required to submit the following:
+[Employee Management System](https://github.com/bootcampdev/employee-management-system-12)
 
-* The URL of the GitHub repository
 
-* A video demonstrating the entirety of the app's functionality 
+## Questions
 
-- - -
-© 2019 Trilogy Education Services, a 2U, Inc. brand. All Rights Reserved.
+[GitHub Account](https://github.com/bootcampdev)
+
+
+<p><a href="mailto:kimberleyheuer@hotmail.com">eMail Contact</a></p>
+
+
+## License
+
+The MIT License is a permissive free software license originating at the Massachusetts Institute of Technology in the late 1980s.
+
+The Mozilla Public License is a free and open-source software license developed and maintained by the Mozilla Foundation.
+
+---
+### Last update
+
+Sun Feb 07 2021 16:58:01 GMT-0600 (Central Standard Time)
+
