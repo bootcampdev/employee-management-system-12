@@ -1,5 +1,6 @@
 const inquirer = require('inquirer')
 const mysql = require('mysql')
+const q = require('q');
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -10,21 +11,20 @@ var connection = mysql.createConnection({
 
 connection.connect(err => {
     if (err) throw err
-    console.log(`Connected to mySQL ${connection.config.database} on thread ${connection.threadId}`)
+    console.log(`Connected to mySQL ${connection.config.database} on thread ${connection.threadId} \n`)
     runMenu()
 });
 
 //
 // prompt user for add, view, update by department, role or employee
 
-const mainMenu = ['Add', 'View', 'Update', 'Exit'];
+const mainMenu = ['Add', 'View', 'Update', 'Delete', 'Department Budget', 'Exit'];
 const subMenu = ['Department', 'Role', 'Employee', 'Exit'];
 let mainMenuChoice = "";
 let mainMenuId;
 let dept_list = [];
 let role_list = [];
 let manager_list = [];
-let sql_view_string = "";
 
 // 
 // main menu
@@ -34,31 +34,42 @@ const runMenu = () => {
         {
             name: 'action',
             type: 'list',
-            message: 'Welcome to |-- HR Employee Management --|  Please select one of the following operations:',
+            message: '\nWelcome to |-- HR Employee Management --|  Please select one of the following operations:\n',
             choices: mainMenu
         }
-    ]).then(answer => {
-        console.log(answer)
-
+    ]).then(answer => {       
         mainMenuChoice = answer.action + " for?";
         if (answer.action === mainMenu[0]) {
             //
             // add
-
             mainMenuId = 0;
             subMenu_prompt();
         } else if (answer.action === mainMenu[1]) {
             //
             // view
-
             mainMenuId = 1;
             subMenu_prompt();
         } else if (answer.action === mainMenu[2]) {
             //
             // update
-
             mainMenuId = 2;
             subMenu_prompt();
+        } else if (answer.action === mainMenu[3]) {
+            //
+            // delete
+            mainMenuId = 3;
+            subMenu_prompt();
+        } else if (answer.action === mainMenu[4]) {
+            //
+            // view department budget
+
+            mainMenuId = 3;
+            view_table(
+                "select d.name as Department, concat('$',sum(r.salary)) as 'Total Budget' " +
+                "from employee e inner join role r on e.role_id = r.id " +
+                "inner join department d on r.department_id = d.id " +
+                "where r.id > 1 group by d.name;"
+            );
         } else {
             exit();
         }
@@ -76,7 +87,6 @@ const runMenu = () => {
                 choices: subMenu
             }
         ]).then(answer => {
-            //console.log(answer)
             if (answer.option === subMenu[0]) {
                 //
                 // department option
@@ -111,7 +121,10 @@ const runMenu = () => {
                 //
                 //add
                 if (mainMenuId == 0) {
-                    employee_prompt();
+                    //employee_prompt();
+                    get_manager_list()
+                        .then(get_role_list)
+                        .then(employee_prompt);
                 }
                 //
                 // view                     
@@ -120,16 +133,24 @@ const runMenu = () => {
                         ", r.role as Role " +
                         ", d.name as Department " +
                         ", e2.last_name as Manager " +
-                        " from employee e inner join role r on e.role_id = r.id " +
+                        "from employee e inner join role r on e.role_id = r.id " +
                         "inner join department d on r.department_id = d.id " +
                         "left outer join employee e2 on e.manager_id = e2.id;");
                 }
                 //
                 // update employee role
                 else if (mainMenuId == 2) {
-                    console.log("employee role ");
-                    employee_update_prompt();
-                    console.log("employee role ",manager_list);
+
+                    get_manager_list()
+                        .then(get_role_list)
+                        .then(employee_update_prompt);
+                }
+                //
+                // delete employee
+                else if (mainMenuId == 3) {
+
+                    get_manager_list()
+                        .then(employee_delete_prompt);
                 }
                 else {
                     exit();
@@ -163,11 +184,10 @@ const runMenu = () => {
                 type: "input",
                 message: "Department name?"
             }
-        ]).then(answer => {
-            //console.log(answer)
+        ]).then(answer => {           
             connection.query("insert into department (name) values (?)", answer.name, (err, result) => {
                 if (err) throw (err)
-                //console.table(result)
+               
                 runMenu()
             })
         })
@@ -186,7 +206,7 @@ const runMenu = () => {
             result.forEach(element => {
                 dept_list.push(`${element.id}-${element.name}`);
             });
-            //console.table(dept_list)
+
             dept_list = [];
         })
 
@@ -225,24 +245,35 @@ const runMenu = () => {
         })
     }
 
+    //
+    // delete employee
 
-    const employee_update_prompt = () => {
-        //
-        // get a list of roles
-
-        get_role_list();
-
-        //
-        // get a list of possible managers
-
-        get_manager_list();
-
+    const employee_delete_prompt = () => {
         inquirer.prompt([
             {
-                name: "test",
-                type: "input",
-                message: "wait"                
-            },
+                name: "whichemployee",
+                type: "list",
+                message: "Select employee:",
+                choices: manager_list
+            }
+
+        ]).then(answer => {
+           
+            let emp_id = parseInt( answer.whichemployee.substring(0, answer.whichemployee.indexOf("-")));
+            let sqlstr = `delete from employee where id = ${emp_id}`;
+
+            connection.query(sqlstr, (err, result) => {
+                if (err) throw (err)               
+                runMenu()
+            })
+        })
+    }
+
+    //
+    // update employee role
+
+    const employee_update_prompt = () => {
+        inquirer.prompt([
             {
                 name: "whichemployee",
                 type: "list",
@@ -262,28 +293,16 @@ const runMenu = () => {
             let emp_id = answer.whichemployee.substring(0, answer.whichemployee.indexOf("-"));
 
             connection.query("update employee set role_id = ? where id = ?", [role_id, emp_id], (err, result) => {
-                if (err) throw (err)
-                console.log("update complete!");
+                if (err) throw (err)                
                 runMenu()
             })
         })
     }
 
-
     //
-    // create a new employee
+    // create new employee
 
     const employee_prompt = () => {
-        //
-        // get a list of roles
-
-        get_role_list();
-
-        //
-        // get a list of possible managers
-
-        get_manager_list();
-
         inquirer.prompt([
             {
                 name: "firstname",
@@ -321,42 +340,53 @@ const runMenu = () => {
                     manager_id: manager_id
                 }, (err, result) => {
                     if (err) throw (err)
-                    //console.table(result)
+
                     runMenu()
                 })
         })
     }
 
-    
 
     const get_manager_list = () => {
+        //
+        // using Q for my promise to return
+        let deferred = q.defer();
+
         manager_list = [];
         connection.query("select id, concat(last_name, ', ',first_name) as Employee from employee", (err, result) => {
-            if (err) throw (err)
-
-            //console.log(result);
+            //if (err) throw (err)
+            if (err) deferred.reject(err);
+           
             result.forEach(element => {
                 manager_list.push(`${element.id}-${element.Employee}`);
             });
+            
+            deferred.resolve();
 
-            //console.log(manager_list);
         })
+        return deferred.promise;
     }
 
     const get_role_list = () => {
+        //
+        // using Q for my promise to return
+        let deferred = q.defer();
+
         role_list = [];
         connection.query("select id, role from role order by id", (err, result) => {
             if (err) throw (err)
-
-            //console.log(result);
+          
             result.forEach(element => {
                 role_list.push(`${element.id}-${element.role}`);
             });
+           
+            deferred.resolve();
         })
+        return deferred.promise;
     }
 
     const exit = () => {
-        console.log('Thank you for use |-- HR Management --|')
+        console.log('Thank you for use of |-- HR Management System --|')
         process.exit()
     }
 }
