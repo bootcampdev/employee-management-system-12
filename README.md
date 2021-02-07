@@ -47,7 +47,7 @@ Additional options are (Bonus):
 
   ## Demo
 
-  [Application Demo](Assets/Emp-Management-Demo.mp4)
+  [Application Demo](https://github.com/bootcampdev/employee-management-system-12/blob/main/Assests/Emp-Management-Demo.mp4)
 
 ## Instructions
 
