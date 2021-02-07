@@ -16,7 +16,7 @@ connection.connect(err => {
 });
 
 //
-// prompt user for add, view, update by department, role or employee
+// prompt user for add, view, update, delete, for department, role or employee
 
 const mainMenu = ['Add', 'View', 'Update', 'Delete', 'Department Budget', 'Exit'];
 const subMenu = ['Department', 'Role', 'Employee', 'Exit'];
@@ -62,7 +62,6 @@ const runMenu = () => {
         } else if (answer.action === mainMenu[4]) {
             //
             // view department budget
-
             mainMenuId = 3;
             view_table(
                 "select d.name as Department, concat('$',sum(r.salary)) as 'Total Budget' " +
@@ -76,7 +75,7 @@ const runMenu = () => {
     })
 
     //
-    // sub menu option - department, role, employee
+    // sub menu options - department, role, employee
 
     const subMenu_prompt = () => {
         inquirer.prompt([
@@ -90,7 +89,6 @@ const runMenu = () => {
             if (answer.option === subMenu[0]) {
                 //
                 // department option
-
                 //
                 // add 
                 if (mainMenuId == 0)
@@ -103,7 +101,7 @@ const runMenu = () => {
             }
             else if (answer.option === subMenu[1]) {
                 //
-                // role main option
+                // role option
 
                 //
                 // add 
@@ -117,9 +115,9 @@ const runMenu = () => {
             }
             else if (answer.option === subMenu[2]) {
                 //
-                // employee main option
+                // employee option
                 //
-                //add
+                // add
                 if (mainMenuId == 0) {
                     //employee_prompt();
                     get_manager_list()
@@ -175,7 +173,7 @@ const runMenu = () => {
     }
 
     //
-    // create a new department
+    // create a new department 
 
     const department_prompt = () => {
         inquirer.prompt([
@@ -239,7 +237,7 @@ const runMenu = () => {
                     department_id: dept_id
                 }, (err, result) => {
                     if (err) throw (err)
-                    //console.table(result)
+
                     runMenu()
                 })
         })
@@ -263,7 +261,8 @@ const runMenu = () => {
             let sqlstr = `delete from employee where id = ${emp_id}`;
 
             connection.query(sqlstr, (err, result) => {
-                if (err) throw (err)               
+                if (err) throw (err)  
+
                 runMenu()
             })
         })
@@ -293,7 +292,8 @@ const runMenu = () => {
             let emp_id = answer.whichemployee.substring(0, answer.whichemployee.indexOf("-"));
 
             connection.query("update employee set role_id = ? where id = ?", [role_id, emp_id], (err, result) => {
-                if (err) throw (err)                
+                if (err) throw (err) 
+
                 runMenu()
             })
         })
@@ -349,7 +349,7 @@ const runMenu = () => {
 
     const get_manager_list = () => {
         //
-        // using Q for my promise to return
+        // using Q for my promise to return data
         let deferred = q.defer();
 
         manager_list = [];
@@ -369,7 +369,7 @@ const runMenu = () => {
 
     const get_role_list = () => {
         //
-        // using Q for my promise to return
+        // using Q for my promise to return data
         let deferred = q.defer();
 
         role_list = [];
