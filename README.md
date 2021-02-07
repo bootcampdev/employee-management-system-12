@@ -46,7 +46,7 @@ Additional options are (Bonus):
   
   * This includes variety of SQL JOINS, GROUP and SUM clauses to complete this assignment.
 
-  * This includes the first time use of the npm module 'q'.  Q helped with the asynch promises for MySQL.  Often the query had not completed before the next function call.  Q was a great asset!  
+  * My first time use of the npm module 'q'.  Q helped with the asynch promises for MySQL.  Often the query had not completed before the next function call.  Q was a great asset!  
 
   ## Demo
 
