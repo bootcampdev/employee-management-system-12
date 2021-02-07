@@ -167,7 +167,6 @@ const runMenu = () => {
 
         connection.query(sqlstr, (err, result) => {
             if (err) throw (err)
-            clear;
             console.table(result)
             runMenu()
         })
