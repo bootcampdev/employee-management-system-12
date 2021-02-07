@@ -1,4 +1,4 @@
-# Unit 12 MySQL Homework: Employee Management System
+# Employee Management System 12-MySQL
 
 <p>
 <img alt="JavaScript" src="https://img.shields.io/badge/javascript%20-%23323330.svg?&style=for-the-badge&logo=javascript&logoColor=%23F7DF1E"/>
@@ -16,12 +16,13 @@
 
 ![Mozilla](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)
 
+## employee-management-system-12
 
-This command line program demonstrates the use of MySQL with node.js and the database functions CRUD, Create, Read, Update and Delete.
+This command line program demonstrates the use of MySQL with node.js, express and the database functions CRUD, Create, Read, Update and Delete.
 This HR command line application builds a solution for managing a company's employees by allowing the user to create department, roles and employees.  Other CRUD operations are allowed to support framework of the employee identities. 
 
 ```
-I want to be able to view and manage the departments, roles, and employees in my company.
+View and manage the departments, roles, and employees in my company.
 
 ```
 
@@ -45,17 +46,21 @@ Additional options are (Bonus):
   
   * This includes variety of SQL JOINS, GROUP and SUM clauses to complete this assignment.
 
+  * This includes the first time use of the npm module 'q'.  Q helped with the asynch promises for MySQL.  Often the query had not completed before the next function call.  Q was a great asset!  
+
   ## Demo
 
-  [Application Demo](Assets/Emp-Management-Demo.mp4)
+  A mp4 file demonstrating the application can be found here:
+
+  [Emp-Management-Demo.mp4](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests)
 
 ## Instructions
 
 Design the following database schema and seed data can be found below:
 
-[Database Schema](Assets/schema-12.sql)
+[Database Schema](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests)
 
-[Working Database Log and seed data](Assets/dbseed-12.sql)
+[Working Database Log and seed data](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests)
 
 ## Require Install
 ```md
@@ -65,7 +70,7 @@ $ node install express
 
 $ node install mysql
 
-$node install q
+$ node install q
 ```
 
 ## Usage
