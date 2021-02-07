@@ -54,7 +54,7 @@ Additional options are (Bonus):
 
   [Emp-Management-Demo.mp4](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests)
 
-  ![Demo in gif](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests/Emp-Management.gif)
+  ![Demo in gif](Emp-Management.gif)
 
 ## Instructions
 
