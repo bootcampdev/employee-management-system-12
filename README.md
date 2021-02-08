@@ -60,7 +60,7 @@ Design the following database schema and seed data can be found below:
 
 [Database Schema](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests)
 
-[Working Database Log and seed data](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests)
+[Working Database Log and Seed Data](https://github.com/bootcampdev/employee-management-system-12/tree/main/Assests)
 
 ## Require Install
 ```md
